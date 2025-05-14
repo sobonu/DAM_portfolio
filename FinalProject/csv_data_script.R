@@ -56,3 +56,26 @@ df_women <- df_women %>%
 df_women <- df_women[, c("year", "doc_count", "age_group_1_21", "age_group_22_30", "age_group_31_50", "age_group_51_99")]
 
 
+
+## Punishment categories
+
+df_punish <- read.csv("data/finalproject1800-1913prisontransportingdeath.csv")
+
+df_punish <- df_punish %>% rename(year = key)
+
+df_punish <- subset(df_punish, year >= 1800)
+
+
+
+## Offence categories
+
+
+df_offence <- read.csv("data/finalproject1800-1913-offencecategory.csv")
+
+df_offence <- df_offence %>% rename(year = key)
+
+df_offence <- subset(df_offence, year >= 1800)
+
+
+
+
