@@ -1,0 +1,103 @@
+---
+title: "The Proceedings of the Old Bailey, 1674-1913"
+output: html_document
+author: "Sebastian Batchford, Noah Vad & Emilie Bærnthsen"
+date: "29/05/2025"
+---
+```{r packages, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+
+
+```
+
+
+###  Processing and filtering data from the Old Bailey
+This script seeks to do the following while creating the data-frames we need:
+
+- Filters out data from the years before 1800 which are outside of our scope.
+
+- Renames some of the vectors to something more suitable.
+
+- Collates the numerous defendant ages into age-groups.
+
+```{r csv_script, echo=TRUE}
+
+## 1800-1913 all genders
+
+df_ages_years_all <- read_csv("data/finalproject1800-1913-all.csv") #Reading the data-sheet
+df_ages_years_all <- df_ages_years_all %>% rename(year = key) #Renaming "key" value to year.
+df_ages_years_all <- subset(df_ages_years_all, year >= 1800) #Removing years before 1800
+
+df_ages_years_all <- df_ages_years_all %>%  #Creating four age-groups
+  mutate(age_group_1_21 = `1` + `2` + `3` + `4` + `5` + `6` + `7` + `8` + `9` + `10` + `11` + `12` + `13` + `14` + `15` + `16` + `17` + `18` + `19` + `20` + `21`) %>% 
+  mutate(age_group_22_30 = `22` + `23` + `24` + `25` + `26` + `27` + `28` + `29` + `30`) %>% 
+  mutate(age_group_31_50 =  `31` + `32` + `33` + `34` + `35` + `36` + `37` + `38` + `39` + `40` + `41` + `42` + `43` + `44` + `45` + `46` + `48` + `49` + `50`) %>% 
+  mutate(age_group_51_99 = rowSums(df_ages_years_all[, 53:101]))
+df_ages_years_all <- df_ages_years_all[, c("year", "doc_count", "age_group_1_21", "age_group_22_30", "age_group_31_50", "age_group_51_99")]
+
+
+## 1800-1913 men
+df_men <- read_csv("data/finalproject1800-1913-men.csv")
+df_men <- df_men %>% rename(year = key)
+df_men <- subset(df_men, year >= 1800)
+
+df_men <- df_men %>%
+  mutate(age_group_1_21 = `1` + `2` + `3` + `4` + `5` + `6` + `7` + `8` + `9` + `10` + `11` + `12` + `13` + `14` + `15` + `16` + `17` + `18` + `19` + `20` + `21`) %>% 
+  mutate(age_group_22_30 = `22` + `23` + `24` + `25` + `26` + `27` + `28` + `29` + `30`) %>% 
+  mutate(age_group_31_50 =  `31` + `32` + `33` + `34` + `35` + `36` + `37` + `38` + `39` + `40` + `41` + `42` + `43` + `44` + `45` + `46` + `48` + `49` + `50`) %>% 
+  mutate(age_group_51_99 = rowSums(df_men[, 53:101]))
+df_men <- df_men[, c("year", "doc_count", "age_group_1_21", "age_group_22_30", "age_group_31_50", "age_group_51_99")]
+
+## 1800-1913 women
+df_women <- read_csv("data/finalproject1800-1913-women.csv")
+df_women <- df_women %>% rename(year = key)
+df_women <- subset(df_women, year >= 1800)
+
+df_women <- df_women %>%
+  mutate(age_group_1_21 = `1` + `2` + `3` + `4` + `5` + `6` + `7` + `8` + `9` + `10` + `11` + `12` + `13` + `14` + `15` + `16` + `17` + `18` + `19` + `20` + `21`) %>% 
+  mutate(age_group_22_30 = `22` + `23` + `24` + `25` + `26` + `27` + `28` + `29` + `30`) %>% 
+  mutate(age_group_31_50 =  `31` + `32` + `33` + `34` + `35` + `36` + `37` + `38` + `39` + `40` + `41` + `42` + `43` + `44` + `45` + `46` + `48` + `49` + `50`) %>% 
+  mutate(age_group_51_99 = rowSums(df_women[, 53:101]))
+df_women <- df_women[, c("year", "doc_count", "age_group_1_21", "age_group_22_30", "age_group_31_50", "age_group_51_99")]
+
+## Punishment categories
+df_punish <- read.csv("data/finalproject1800-1913prisontransportingdeath.csv")
+df_punish <- df_punish %>% rename(year = key)
+df_punish <- subset(df_punish, year >= 1800)
+
+## Offence categories
+df_offence <- read.csv("data/finalproject1800-1913-offencecategory.csv")
+df_offence <- df_offence %>% rename(year = key)
+df_offence <- subset(df_offence, year >= 1800)
+
+```
+
+
+### Creating figures
+This script creates graphs from our date-frames.
+
+```{r figure_age_years_all}
+
+
+dfplot_ages_years_all <- select(df_ages_years_all, year, age_group_1_21, age_group_22_30, age_group_31_50, age_group_51_99)
+dfplot_ages_years_all <- pivot_longer(dfplot_ages_years_all, cols = -year, names_to = "age_group", values_to = "executions")
+
+ggplot(dfplot_ages_years_all, aes(x = year, y = executions, color = age_group)) +
+  geom_line(size = 0.1) +
+  geom_smooth(se = FALSE, method = "loess", size = 1.0) +
+  scale_y_log10() +
+  ggtitle("Executions by Age Group Over Years") +
+  xlab("Year") +
+  ylab("Number of Executions") +
+  theme_minimal() +
+  scale_color_manual(values = c("age_group_1_21" = "blue", "age_group_22_30" = "green", "age_group_31_50" = "red", "age_group_51_99" = "purple"), labels = c("1-21 years", "22-30 years", "31-50 years", "51-99 years")) +
+  labs(color = "Age Group")
+
+ggsave(filename = "figures/executions_by_age_group_all.png", width = 10, height = 6)
+
+
+```
+
+
