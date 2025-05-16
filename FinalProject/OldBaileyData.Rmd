@@ -28,7 +28,7 @@ This script seeks to do the following while creating the data-frames we need:
 
 df_ages_years_all <- read_csv("data/finalproject1800-1913-all.csv") #Reading the data-sheet
 df_ages_years_all <- df_ages_years_all %>% rename(year = key) #Renaming "key" value to year.
-df_ages_years_all <- subset(df_ages_years_all, year >= 1800) #Removing years before 1800
+df_ages_years_all <- filter(df_ages_years_all, year >= 1800) #Removing years before 1800
 
 df_ages_years_all <- df_ages_years_all %>%  #Creating four age-groups
   mutate(age_group_1_21 = `1` + `2` + `3` + `4` + `5` + `6` + `7` + `8` + `9` + `10` + `11` + `12` + `13` + `14` + `15` + `16` + `17` + `18` + `19` + `20` + `21`) %>% 
@@ -41,7 +41,7 @@ df_ages_years_all <- df_ages_years_all[, c("year", "doc_count", "age_group_1_21"
 ## 1800-1913 men
 df_men <- read_csv("data/finalproject1800-1913-men.csv")
 df_men <- df_men %>% rename(year = key)
-df_men <- subset(df_men, year >= 1800)
+df_men <- filter(df_men, year >= 1800)
 
 df_men <- df_men %>%
   mutate(age_group_1_21 = `1` + `2` + `3` + `4` + `5` + `6` + `7` + `8` + `9` + `10` + `11` + `12` + `13` + `14` + `15` + `16` + `17` + `18` + `19` + `20` + `21`) %>% 
@@ -53,7 +53,7 @@ df_men <- df_men[, c("year", "doc_count", "age_group_1_21", "age_group_22_30", "
 ## 1800-1913 women
 df_women <- read_csv("data/finalproject1800-1913-women.csv")
 df_women <- df_women %>% rename(year = key)
-df_women <- subset(df_women, year >= 1800)
+df_women <- filter(df_women, year >= 1800)
 
 df_women <- df_women %>%
   mutate(age_group_1_21 = `1` + `2` + `3` + `4` + `5` + `6` + `7` + `8` + `9` + `10` + `11` + `12` + `13` + `14` + `15` + `16` + `17` + `18` + `19` + `20` + `21`) %>% 
@@ -65,12 +65,12 @@ df_women <- df_women[, c("year", "doc_count", "age_group_1_21", "age_group_22_30
 ## Punishment categories
 df_punish <- read.csv("data/finalproject1800-1913prisontransportingdeath.csv")
 df_punish <- df_punish %>% rename(year = key)
-df_punish <- subset(df_punish, year >= 1800)
+df_punish <- filter(df_punish, year >= 1800)
 
 ## Offence categories
 df_offence <- read.csv("data/finalproject1800-1913-offencecategory.csv")
 df_offence <- df_offence %>% rename(year = key)
-df_offence <- subset(df_offence, year >= 1800)
+df_offence <- filter(df_offence, year >= 1800)
 
 ```
 
@@ -85,7 +85,6 @@ dfplot_ages_years_all <- select(df_ages_years_all, year, age_group_1_21, age_gro
 dfplot_ages_years_all <- pivot_longer(dfplot_ages_years_all, cols = -year, names_to = "age_group", values_to = "executions")
 
 ggplot(dfplot_ages_years_all, aes(x = year, y = executions, color = age_group)) +
-  geom_line(size = 0.1) +
   geom_smooth(se = FALSE, method = "loess", size = 1.0) +
   scale_y_log10() +
   ggtitle("Executions by Age Group Over Years") +
