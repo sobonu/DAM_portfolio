@@ -13,8 +13,8 @@ library(tidyverse)
 ```
 
 
-##  Processing and filtering data from the Old Bailey
-This script seeks to do the following while creating the data-frames we need:
+##  Processing and filtering our data from the Old Bailey
+The following script seeks to do the following while creating the data-frames we need for our analysis:
 
 - Filters out data from the years before 1800 which are outside of our scope.
 
@@ -75,10 +75,13 @@ df_offence <- filter(df_offence, year >= 1800)
 ```
 
 
-## Creating figures
-This script creates graphs from our date-frames.
 
-### Figure 1: Executions by Age Group Over Year
+## Figures
+The following code chunks will creates graphs/figures with our date-frames.
+
+
+### Figure 1: Death sentences by age group, 1800-1913
+This figure shows the number of death sentences in trials from 1800 to 1913 by age group.
 
 ```{r figure_age_years_all}
 
@@ -87,13 +90,14 @@ dfplot_ages_years_all <- select(df_ages_years_all, year, age_group_1_21, age_gro
 dfplot_ages_years_all <- pivot_longer(dfplot_ages_years_all, cols = -year, names_to = "age_group", values_to = "executions")
 
 ggplot(dfplot_ages_years_all, aes(x = year, y = executions, color = age_group)) +
-  geom_smooth(se = FALSE, method = "loess", size = 1.0) +
+  geom_smooth(se = FALSE, method = "loess", linewidth = 1.0) +
   scale_y_log10() +
-  ggtitle("Figure 1: Executions by Age Group,  1800-1913") +
+  ggtitle("Figure 1: Death sentences by age group, 1800-1913") +
   xlab("Year") +
-  ylab("Number of Executions") +
+  ylab("Number of death sentences (log scale)") +
+  scale_x_continuous(breaks = seq(1800, 1913, by = 10), expand = c(0, 0)) +
   theme_minimal() +
-  scale_color_manual(values = c("age_group_1_21" = "blue", "age_group_22_30" = "green", "age_group_31_50" = "red", "age_group_51_99" = "purple"), labels = c("1-21 years", "22-30 years", "31-50 years", "51-99 years")) +
+  scale_color_manual(values = c("age_group_1_21" = "blue", "age_group_22_30" = "green", "age_group_31_50" = "red", "age_group_51_99" = "yellow"), labels = c("1-21 years", "22-30 years", "31-50 years", "51-99 years")) +
   labs(color = "Age Group")
 
 ggsave(filename = "figures/fig1_executions_by_age_group_all.png", width = 10, height = 6)
@@ -101,7 +105,11 @@ ggsave(filename = "figures/fig1_executions_by_age_group_all.png", width = 10, he
 
 ```
 
-### Figure 2: Executions by Age Group Over Years (Males)
+
+
+### Figure 2: Death sentences by age group, 1800-1913 (Males)
+This figure shows the number of death sentences in trials with male defendants from 1800 to 1913 by age group.
+
 ```{r figure_men}
 
 
@@ -109,11 +117,12 @@ dfplot_men <- select(df_men, year, age_group_1_21, age_group_22_30, age_group_31
 dfplot_men <- pivot_longer(dfplot_men, cols = -year, names_to = "age_group", values_to = "executions")
 
 ggplot(dfplot_men, aes(x = year, y = executions, color = age_group)) +
-  geom_smooth(se = FALSE, method = "loess", size = 1.0) +
+  geom_smooth(se = FALSE, method = "loess", linewidth = 1.0) +
   scale_y_log10() +
-  ggtitle("Figure 2: Executions by Age Group, 1800-1913 (Males)") +
+  ggtitle("Figure 2: Death sentences by age group, 1800-1913 (Males)") +
   xlab("Year") +
-  ylab("Number of Executions") +
+  ylab("Number of death sentences (log scale)") +
+  scale_x_continuous(breaks = seq(1800, 1913, by = 10), expand = c(0, 0)) +
   theme_minimal() +
   scale_color_manual(values = c("age_group_1_21" = "blue", "age_group_22_30" = "green", "age_group_31_50" = "red", "age_group_51_99" = "purple"), labels = c("1-21 years", "22-30 years", "31-50 years", "51-99 years")) +
   labs(color = "Age Group")
@@ -125,7 +134,10 @@ ggsave(filename = "figures/fig2_executions_by_age_group_men.png", width = 10, he
 ```
 
 
-### Figure 3: Executions by Age Group Over Years (Females)
+
+### Figure 3: Death sentences by age group, 1800-1913 (Females)
+This figure shows the number of death sentences in trials with female defendants from 1800 to 1913 by age group.
+
 ```{r figure_women}
 
 
@@ -133,11 +145,12 @@ dfplot_women <- select(df_women, year, age_group_1_21, age_group_22_30, age_grou
 dfplot_women <- pivot_longer(dfplot_women, cols = -year, names_to = "age_group", values_to = "executions")
 
 ggplot(dfplot_women, aes(x = year, y = executions, color = age_group)) +
-  geom_smooth(se = FALSE, method = "loess", size = 1.0) +
+  geom_smooth(se = FALSE, method = "loess", linewidth = 1.0) +
   scale_y_log10() +
-  ggtitle("Figure 3: Executions by Age Group, 1800-1913 (Females)") +
+  ggtitle("Figure 3: Death sentences by age group, 1800-1913 (Females)") +
   xlab("Year") +
-  ylab("Number of Executions") +
+  ylab("Number of death sentences (log scale)") +
+  scale_x_continuous(breaks = seq(1800, 1913, by = 10), expand = c(0, 0)) +
   theme_minimal() +
   scale_color_manual(values = c("age_group_1_21" = "blue", "age_group_22_30" = "green", "age_group_31_50" = "red", "age_group_51_99" = "purple"), labels = c("1-21 years", "22-30 years", "31-50 years", "51-99 years")) +
   labs(color = "Age Group")
@@ -148,7 +161,11 @@ ggsave(filename = "figures/fig3_executions_by_age_group_women.png", width = 10, 
 
 ```
 
-### Figure 4: Punishment
+
+
+### Figure 4: Punishment sentences in trials, 1800-1913
+This figure shows the frequency of punishment categories in trials from 1800 to 1913.
+
 ```{r figure_punish}
 
 dfplot_punish <- select(df_punish, year, death, corporal, imprison, miscPunish, noPunish, transport)
@@ -156,40 +173,45 @@ dfplot_punish <- pivot_longer(dfplot_punish, cols = -year, names_to = "punish_ty
 
 
 ggplot(dfplot_punish, aes(x = year, y = punish_amount, color = punish_type)) +
-  geom_smooth(se = FALSE, method = "loess", size = 1.0) +
+  geom_smooth(se = FALSE, method = "loess", linewidth = 1.0) +
   scale_y_log10() +
-  ggtitle("Figure 4: Punishments Over Years, 1800-1913") +
+  ggtitle("Figure 4: Punishment sentences in trials, 1800-1913") +
   xlab("Year") +
-  ylab("Punishment prevelance") +
+  ylab("Frequency of punishment category (log scale)") +
+  scale_x_continuous(breaks = seq(1800, 1913, by = 10), expand = c(0, 0)) +
   theme_minimal() +
   scale_color_manual(
   values = c("death" = "green", "corporal" = "blue", "imprison" = "red", "miscPunish" = "purple", "noPunish" = "orange", "transport" = "yellow"),
   labels = c("death" = "Death", "corporal" = "Corporal", "imprison" = "Imprisonment", "miscPunish" = "Misc. Punishment", "noPunish" = "No Punishment", "transport" = "Transportation")) +
-  labs(color = "Punishment Types")
+  labs(color = "Punishment Category")
 
 ggsave(filename = "figures/fig4_punishment_types.png", width = 10, height = 6)
 
 
 ```
 
-### Figure 5: Offence categories
+
+
+### Figure 5: Offences in trials with death sentences, 1800-1913
+This figure shows the frequency of offence categories in trials with death sentences from 1800 to 1913.
+
 ```{r figure_offence}
 
 
 dfplot_offence <- select(df_offence, year, breakingPeace, deception, kill, miscellaneous, royalOffences, theft, violentTheft, sexual, damage,)
 dfplot_offence <- pivot_longer(dfplot_offence, cols = -year, names_to = "offence_category", values_to = "offence_amount")
 
-
 ggplot(dfplot_offence, aes(x = year, y = offence_amount, color = offence_category)) +
-  geom_smooth(se = FALSE, method = "loess", size = 1.0) +
+  geom_smooth(se = FALSE, method = "loess", linewidth = 1.0) +
   scale_y_log10() +
-  ggtitle("Figure 5: Offences committed by individuals sentenced to death, 1800-1913") +
+  ggtitle("Figure 5: Offences in trials with death sentences, 1800-1913") +
   xlab("Year") +
-  ylab("Offence Prevalence") +
+  ylab("Frequency of offence category (log scale)") +
+  scale_x_continuous(breaks = seq(1800, 1913, by = 10), expand = c(0, 0)) +
   theme_minimal() +
   scale_color_manual(
   values = c("breakingPeace" = "green", "deception" = "blue", "kill" = "red", "miscellaneous" = "purple", "royalOffences" = "orange", "theft" = "yellow", "violentTheft" = "hotpink", "sexual" = "cyan", "damage" = "black"),
-  labels = c("breakingPeace" = "Breaking peace", "deception" = "Deception", "kill" = "Murder", "miscellaneous" = "Miscellaneous", "royalOffences" = "Royal Offences", "theft" = "Theft", "violentTheft" = "Violent Theft", "sexual" = "Sexual", "damage" = "Damage")) +
+  labels = c("breakingPeace" = "Breaking Peace", "deception" = "Deception", "kill" = "Killing", "miscellaneous" = "Miscellaneous Offences", "royalOffences" = "Royal Offences", "theft" = "Theft", "violentTheft" = "Violent Theft", "sexual" = "Sexual Offences", "damage" = "Damage to Property")) +
   labs(color = "Offence Category")
 
 ggsave(filename = "figures/fig5_offences_committed.png", width = 10, height = 6)
@@ -197,4 +219,6 @@ ggsave(filename = "figures/fig5_offences_committed.png", width = 10, height = 6)
 
 
 ```
+
+
 
